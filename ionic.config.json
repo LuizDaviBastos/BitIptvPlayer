@@ -1,7 +1,0 @@
-{
-  "name": "BitIptvPlayer",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
