@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Blank
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Blank</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-content [fullscreen]="true">
+      <ion-content>
+        <ion-refresher pullFactor="0.5" pullMin="10" pullMax="10" slot="fixed" (ionRefresh)="doRefresh($event)">
+          <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+        <div class="spin" *ngIf="!(fb.list.length > 0)">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+    
+        <ion-list *ngIf="fb.list.length > 0">
+          <ion-item *ngFor="let item of fb.list">
+            <ion-label (click)="showPanel(item.id)">{{item.nome}}</ion-label>
+            <ion-row>
+              <ion-col>
+                <ion-button color="success" expand="block">
+                  <ion-icon style="color: white;" name="copy"></ion-icon>
+                </ion-button>
+              </ion-col>
+              <ion-col>
+                <ion-button (click)="presentAlert(item.id)" color="danger" expand="block">
+                  <ion-icon name="trash"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="newAccount()">
+          <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+    </ion-content>
+  </div>
+</ion-content>
