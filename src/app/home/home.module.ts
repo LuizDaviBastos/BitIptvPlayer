@@ -6,6 +6,9 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import { FireBaseService } from 'src/services/firebase-service';
+import { StreamFileManager } from 'src/services/stream-file-manager-service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { DatabaseService } from 'src/services/database-service';
 
 
 @NgModule({
@@ -13,9 +16,12 @@ import { FireBaseService } from 'src/services/firebase-service';
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    HttpClientModule
   ],
   declarations: [HomePage],
-  providers: [FireBaseService]
+  providers: [HttpClient, FireBaseService, StreamFileManager, HttpClient,
+    DatabaseService
+  ]
 })
 export class HomePageModule {}
