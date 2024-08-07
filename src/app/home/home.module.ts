@@ -8,7 +8,10 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { FireBaseService } from 'src/services/firebase-service';
 import { StreamFileManager } from 'src/services/stream-file-manager-service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { DatabaseService } from 'src/services/database-service';
+import { DatabaseService } from 'src/services/database-service.mobile';
+import { DatabaseServiceWeb } from 'src/services/database-service.web';
+import { XtreamService } from 'src/services/xtream-service';
+import { LiveTvComponent } from '../live-tv/live-tv.component';
 
 
 @NgModule({
@@ -19,9 +22,14 @@ import { DatabaseService } from 'src/services/database-service';
     HomePageRoutingModule,
     HttpClientModule
   ],
-  declarations: [HomePage],
-  providers: [HttpClient, FireBaseService, StreamFileManager, HttpClient,
-    DatabaseService
+  declarations: [HomePage, LiveTvComponent],
+  providers: [
+    HttpClient, 
+    FireBaseService, 
+    StreamFileManager,
+    DatabaseService,
+    DatabaseServiceWeb,
+    XtreamService
   ]
 })
 export class HomePageModule {}

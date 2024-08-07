@@ -1,0 +1,54 @@
+<ion-header>
+    <ion-toolbar>
+        <div class="toolbar-container">
+            <ion-buttons slot="start">
+                <ion-back-button default-href="#"></ion-back-button>
+            </ion-buttons>
+            <div>
+                <ion-title>Back Button</ion-title>
+            </div>
+            <div>
+                <ion-searchbar (keyup.enter)="onSearch()" (keyup)="onSearch()" [(ngModel)]="search" animated="true"
+                    placeholder="Search channel"></ion-searchbar>
+            </div>
+        </div>
+    </ion-toolbar>
+
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <ion-content>
+        <ion-refresher pullFactor="0.5" pullMin="10" pullMax="10" slot="fixed"
+            (ionRefresh)="listChannels.bind(this, $event)">
+            <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+        <ion-grid>
+            <ion-row>
+                <ion-col size="3">
+                    <ion-list style="overflow: auto; max-height: 97.8vh;">
+                        <ion-searchbar (keyup.enter)="onSearch()" (keyup)="onSearch()" [(ngModel)]="search"
+                            animated="true" placeholder="Search by name"></ion-searchbar>
+                        <ion-item role="button" (click)="selectCategory(category)" role="button"
+                            *ngFor="let category of categories">
+                            <ion-label role="button">{{category.category_name}}</ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col size="3">
+                    <ion-list style="overflow: auto; max-height: 97.8vh;">
+                        <ion-item role="button" (click)="selectChannel(channel)" role="button"
+                            *ngFor="let channel of channels">
+                            <ion-thumbnail>
+                                <img alt="Silhouette of mountains" [src]="channel.stream_icon" />
+                            </ion-thumbnail>
+                            <ion-label role="button">{{channel.name}}</ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col size="6">
+                    <video style="width: 100%; height: 500px;" #video controls autoplay></video>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-content>
+</ion-content>

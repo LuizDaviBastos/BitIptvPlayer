@@ -3,6 +3,6 @@ export class Channel {
     public url?: string;
     public groupName?: string;
     public logo?: string;
-    public tvgId?: string;
     public id?: string;
+    public tvgId?: string;
   }

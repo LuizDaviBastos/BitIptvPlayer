@@ -119,7 +119,6 @@ export class StreamFileManager {
                 if (match) {
                     const tvgId = match[1];
                     currentChannel = {
-                        tvgId,
                         name: '', // Initialize name for later extraction
                         url: '', // URL will be set later
                         groupName: '', // Group will be set later
