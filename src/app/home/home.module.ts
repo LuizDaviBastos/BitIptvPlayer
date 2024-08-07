@@ -12,6 +12,16 @@ import { DatabaseService } from 'src/services/database-service.mobile';
 import { DatabaseServiceWeb } from 'src/services/database-service.web';
 import { XtreamService } from 'src/services/xtream-service';
 import { LiveTvComponent } from '../live-tv/live-tv.component';
+import {
+  FontAwesomeModule,
+  FaStackComponent,
+  FaIconLibrary,
+} from '@fortawesome/angular-fontawesome';
+
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSmile } from '@fortawesome/free-solid-svg-icons';
+import { IconPack, faTv } from '@fortawesome/free-solid-svg-icons';
+
 
 
 @NgModule({
@@ -20,16 +30,23 @@ import { LiveTvComponent } from '../live-tv/live-tv.component';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FontAwesomeModule
+    
   ],
   declarations: [HomePage, LiveTvComponent],
   providers: [
-    HttpClient, 
-    FireBaseService, 
+    HttpClient,
+    FireBaseService,
     StreamFileManager,
     DatabaseService,
     DatabaseServiceWeb,
     XtreamService
   ]
 })
-export class HomePageModule {}
+export class HomePageModule {
+  constructor() {
+    
+    library.add([faTv])
+  }
+}

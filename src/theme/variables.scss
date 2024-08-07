@@ -1,2 +1,15 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
+
+
+:root {
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --ion-background-color: linear-gradient(172deg, rgba(0, 0, 0, 1) 0%, rgba(14, 20, 62, 1) 32%, rgba(11, 20, 80, 1) 62%, rgba(9, 23, 61, 1) 89%)
+}
+
+@media (prefers-color-scheme: dark) {
+    :root.md {
+        --ion-background-color: linear-gradient(172deg, rgba(0, 0, 0, 1) 0%, rgba(14, 20, 62, 1) 32%, rgba(11, 20, 80, 1) 62%, rgba(9, 23, 61, 1) 89%)
+       
+    }
+}

@@ -7,7 +7,6 @@ import Hls from 'hls.js';
 import { StreamFileManager } from 'src/services/stream-file-manager-service';
 import { Channel } from '../../model/channel';
 import { DatabaseService } from 'src/services/database-service.mobile';
-import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { IDatabaseService } from 'src/interfaces/database-service.interface';
 import { DatabaseServiceWeb } from 'src/services/database-service.web';
 import { Utils } from 'src/utils/utils';
@@ -41,8 +40,7 @@ export class LiveTvComponent {
             //this.route.navigate(['tabs/tab1']);
         });
 
-        if (!this.platform.is("desktop")) {
-            ScreenOrientation.lock({ orientation: 'landscape' });
+        if (!this.platform.is("mobileweb")) {
             this.databaseService = inject(DatabaseService)
         } else {
             this.databaseService = inject(DatabaseServiceWeb)
@@ -50,10 +48,6 @@ export class LiveTvComponent {
     }
 
     async ngAfterViewInit() {
-        if (!this.platform.is("desktop")) {
-            await ScreenOrientation.lock({ orientation: 'landscape' });
-        }
-
         this.player = new Hls();
         const video = this.videoRef?.nativeElement as HTMLVideoElement;
         this.player.attachMedia(video);

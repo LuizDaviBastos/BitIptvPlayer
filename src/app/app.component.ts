@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +9,14 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private platform: Platform) { }
+  constructor(private platform: Platform) {
+    if (!this.platform.is("mobileweb")) {
+      ScreenOrientation.lock({ orientation: 'landscape' });
+    }
+  }
 
   async ngAfterViewInit() {
-   
+
   }
 
 

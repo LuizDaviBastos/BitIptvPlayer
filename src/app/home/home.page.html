@@ -1,34 +1,47 @@
 <ion-content [fullscreen]="true">
-  <ion-row>
-    <ion-col>
-      <ion-card (click)="navigate('live')" color="primary">
-        <ion-card-header>
-          <ion-card-title>AO VIVO</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-
-        <ion-card-content> Card Content </ion-card-content>
-      </ion-card>
-    </ion-col>
-    <ion-col>
-      <ion-card color="secondary">
-        <ion-card-header>
-          <ion-card-title>FILMES</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-
-        <ion-card-content> Card Content </ion-card-content>
-      </ion-card>
-    </ion-col>
-    <ion-col>
-      <ion-card color="tertiary">
-        <ion-card-header>
-          <ion-card-title>SERIES</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-
-        <ion-card-content> Card Content </ion-card-content>
-      </ion-card>
-    </ion-col>
-  </ion-row>
+  <div class="home-container">
+    <ion-grid>
+      <ion-row class="ion-row-container">
+        <ion-col size="4" class="col-live">
+          <ion-card class="card-live" (click)="navigate('live')" color="primary">
+            <ion-icon class="icon-tv" src="./../../assets/icons/tv.svg"></ion-icon>
+            <ion-card-title>AO VIVO</ion-card-title>
+          </ion-card>
+        </ion-col>
+        <ion-col size="8" class="p-0">
+          <ion-row class="row-secondary">
+            <ion-col>
+              <ion-card color="secondary">
+                <ion-icon class="icon-tv" src="./../../assets/icons/tv.svg"></ion-icon>
+                <ion-card-title>FILMES</ion-card-title>
+              </ion-card>
+            </ion-col>
+            <ion-col>
+              <ion-card color="tertiary">
+                <ion-icon class="icon-tv" src="./../../assets/icons/tv.svg"></ion-icon>
+                <ion-card-title>SERIES</ion-card-title>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+          <ion-row class="epg-row">
+            <ion-col size="4">
+              <ion-card class="epg-card" color="tertiary">
+                <ion-label>LIVE WITH EPG</ion-label>
+              </ion-card>
+            </ion-col>
+            <ion-col size="4">
+              <ion-card class="epg-card" color="tertiary">
+                <ion-label>CATCHUP</ion-label>
+              </ion-card>
+            </ion-col>
+            <ion-col size="4">
+              <ion-card class="epg-card" color="tertiary">
+                <ion-label>DESLOGAR</ion-label>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
