@@ -21,6 +21,7 @@ import {
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSmile } from '@fortawesome/free-solid-svg-icons';
 import { IconPack, faTv } from '@fortawesome/free-solid-svg-icons';
+import { PlayerComponent } from '../player/player.component';
 
 
 
@@ -31,10 +32,9 @@ import { IconPack, faTv } from '@fortawesome/free-solid-svg-icons';
     IonicModule,
     HomePageRoutingModule,
     HttpClientModule,
-    FontAwesomeModule
-    
+    FontAwesomeModule,
   ],
-  declarations: [HomePage, LiveTvComponent],
+  declarations: [HomePage, LiveTvComponent, PlayerComponent],
   providers: [
     HttpClient,
     FireBaseService,

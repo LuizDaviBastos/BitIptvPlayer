@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [AppComponent],

@@ -13,6 +13,7 @@ import { Utils } from 'src/utils/utils';
 import { XtreamService } from 'src/services/xtream-service';
 import { ICategory } from 'src/interfaces/category.interface';
 import { IChannel } from 'src/interfaces/channel.interface';
+import { PlayerComponent } from '../player/player.component';
 
 @Component({
     selector: 'live-tv',
@@ -22,9 +23,8 @@ import { IChannel } from 'src/interfaces/channel.interface';
 export class LiveTvComponent {
 
 
-    @ViewChild('video') videoRef?: ElementRef;
-    public player: Hls = new Hls();
-    public url: string = 'http://play.1list.vip/get.php?username=Robson1374&password=ch3av1jnzme&type=m3u_plus&output=m3u8';
+    @ViewChild('player') 
+    public player?: PlayerComponent;
     public channels: IChannel[] = [];
     private databaseService!: IDatabaseService;
     public pagedChannels: Channel[][] = Utils.paginateList<Channel[]>([]);
@@ -48,15 +48,7 @@ export class LiveTvComponent {
     }
 
     async ngAfterViewInit() {
-        this.player = new Hls();
-        const video = this.videoRef?.nativeElement as HTMLVideoElement;
-        this.player.attachMedia(video);
-
-        this.player.on(Hls.Events.ERROR, (event, data) => {
-            if (data.details == "bufferStalledError") return;
-            console.log('HLS playback error:', data);
-        });
-
+        
         this.platform.ready().then(async () => {
             this.xtreamService.login({
                 auth: {
@@ -69,18 +61,6 @@ export class LiveTvComponent {
             await this.databaseService.initializePlugin();
             this.listChannels();
         });
-    }
-
-    ngOnInit() {
-
-    }
-
-
-    ngOnDestroy() {
-        if (this.player) {
-            this.player.detachMedia();
-            this.player.destroy();
-        }
     }
 
     public clearChannels() {
@@ -108,7 +88,6 @@ export class LiveTvComponent {
     }
 
     public async listChannels(event?: any) {
-
         this.xtreamService.getLiveStreamCategory().subscribe((categories) => {
             this.categories = categories;
         });
@@ -121,26 +100,23 @@ export class LiveTvComponent {
             //this.channels = this.pagedChannels[this.currentPage];
         }
         else {
-            this.streamFileManager.downloadAndReadFile(this.url, (percent) => {
-                console.log(percent);
-            }).then((response) => {
-                const channels = this.streamFileManager.parseChannels(response);
-                this.pagedChannels = Utils.paginateList(channels);
-                //this.channels = this.pagedChannels[this.currentPage];
-                this.databaseService.addChannels(channels);
-            });
+            
         }
         event && event.target.complete();
 
     }
 
+    public currentChannel?: IChannel;
     public selectChannel(channel: IChannel) {
-        const url = this.xtreamService.getChannelUrl(channel)
-        this.player.loadSource(url);
+       this.player?.selectChannel(channel);
+        
+    }
+    public seconds: number = 0;
+  
 
-        this.player.on(Hls.Events.MANIFEST_PARSED, () => {
-            this.player.startLoad();
-        });
+    public load (seconds: number, channel: IChannel) {
+        
     }
 
 }
+

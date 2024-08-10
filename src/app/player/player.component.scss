@@ -1,0 +1,52 @@
+.error-player {
+    font-size: 21px;
+    font-weight: 600;
+    margin: auto;
+    text-align: center;
+}
+
+.video-container {
+    width: 100%;
+}
+.player-container {
+    height: 324px;
+    width: 100%;
+    display: flex;
+}
+
+video {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    background: rgb(0 0 0 / 34%);
+}
+
+.error-container {
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.5;
+    display: flex;
+}
+
+.loading-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background: rgb(0 0 0 / 34%);
+    ion-spinner {
+        margin: auto;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+
+
+
+
+
+.d-none {
+    display: none;
+}

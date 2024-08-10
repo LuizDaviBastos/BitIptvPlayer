@@ -1,0 +1,15 @@
+<div class="player-container">
+    <div class="video-container" [ngClass]="{'d-none': !showVideo}">
+        <video #video autoplay></video>
+    </div>
+    <div *ngIf="showReconnecting || showCannotPlay" class="error-container">
+        <label *ngIf="showReconnecting" class="error-player">Playback error, reconnecting in 5s
+            ({{errorcount}}/5)</label>
+        <label *ngIf="showCannotPlay" class="error-player">Sorry, this video can not be played.
+            Please try again or pick another video.</label>
+    </div>
+
+    <div [ngClass]="{'d-none': !showLoadingContainer}" class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+    </div>
+</div>

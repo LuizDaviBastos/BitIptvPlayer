@@ -1,5 +1,5 @@
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import queryString from 'query-string';
 import { IVodInfo, ICategory, IChannel, IAuthInfo } from 'src/interfaces';
@@ -124,7 +124,20 @@ export class XtreamService {
     }
 
     public getChannelUrl(channel: IChannel) {
+        //m3u8
         const ext = channel.stream_type != 'live' ? 'mp4' : 'm3u8';
         return `${this.config.baseUrl}/${channel.stream_type}/${this.config.auth.username}/${this.config.auth.password}/${channel.stream_id}.${ext}`;
+    }
+
+
+    public getLineInformation() {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        const body = new HttpParams({
+            fromObject: {
+                "username": "Robson1374",
+                "password": "ch3av1jnzme"
+            }
+        });
+        return this.httpClient.post('http://127.0.0.1:80/api.php?action=user&sub=info', body.toString(), { headers })
     }
 }
