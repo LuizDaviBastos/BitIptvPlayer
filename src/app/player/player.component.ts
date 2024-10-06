@@ -2,7 +2,6 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
 import Hls from 'hls.js';
 import { XtreamService } from 'src/services/xtream-service';
-import { ICategory } from 'src/interfaces/category.interface';
 import { IChannel } from 'src/interfaces/channel.interface';
 
 @Component({
@@ -14,8 +13,10 @@ export class PlayerComponent {
 
 
     @ViewChild('video') videoRef?: ElementRef;
+    @ViewChild('videoContainer') videoContainer?: ElementRef;
     public player?: Hls = new Hls();
-
+    public video?: HTMLVideoElement;
+    
     public seconds: number = 0;
     public currentChannel?: IChannel;
     //public url: string = 'http://play.1list.vip/get.php?username=Robson1374&password=ch3av1jnzme&type=m3u_plus&output=ts';
@@ -32,37 +33,39 @@ export class PlayerComponent {
 
     async ngAfterViewInit() {
         //this.showLoading(true);
-
+        this.videoContainer
+        this.video = this.videoRef?.nativeElement as HTMLVideoElement;
         this.player = new Hls();
-        const video = this.videoRef?.nativeElement as HTMLVideoElement;
-        this.player.attachMedia(video);
+        this.player.attachMedia(this.video);
 
         this.player.on(Hls.Events.MANIFEST_PARSED, () => {
             console.log("MANIFEST_PARSED")
             this.player!.startLoad();
             this.seconds = 0;
             this.errorcount = 0;
+
             this.showReconnecting = false;
             this.showCannotPlay = false;
-            this.showVideo = true;
             this.showLoadingContainer = false;
+            
+            this.setVideoVisible(true);
         });
 
         this.player.on(Hls.Events.ERROR, (event, data) => {
             this.errorcount++;
             this.showLoadingContainer = false;
-            this.showVideo = false;
+            this.setVideoVisible(false);
 
             if (this.errorcount <= 5) {
                 this.showReconnecting = true;
                 this.showCannotPlay = false;
 
                 this.selectChannel(this.currentChannel!, false);
-                this.setVisible(false);
+                this.setVideoVisible(false);
             }
 
             if (this.errorcount > 5) {
-                this.setVisible(false);
+                this.setVideoVisible(false);
                 this.showCannotPlay = true;
                 this.showReconnecting = false;
             }
@@ -72,7 +75,7 @@ export class PlayerComponent {
 
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this.player) {
             this.player.detachMedia();
             this.player.destroy();
@@ -94,15 +97,9 @@ export class PlayerComponent {
             if (!this.player) return;
             const url = this.xtreamService.getChannelUrl(channel);
             this.player.loadSource(url);
+            this.video!.volume = 0;
         }, force ? 0 : 5000);
 
-    }
-
-    public reCreatePlayer() {
-        this.destroyPlayer();
-        this.player = new Hls();
-        const video = this.videoRef?.nativeElement as HTMLVideoElement;
-        this.player.attachMedia(video);
     }
 
     public destroyPlayer() {
@@ -113,13 +110,15 @@ export class PlayerComponent {
         }
     }
 
-    public setVisible(visible: boolean) {
-        this.showVideo = visible;
+    public setVideoVisible(visible: boolean) {
+        if(this.videoContainer?.nativeElement) {
+            this.videoContainer.nativeElement.hidden = !visible;
+        }
     }
 
     public showLoading(status: boolean) {
         this.showLoadingContainer = status;
-        this.showVideo = !status;
+        this.setVideoVisible(!status);
     }
 }
 

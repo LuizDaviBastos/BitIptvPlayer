@@ -1,5 +1,5 @@
 <div class="player-container">
-    <div class="video-container" [ngClass]="{'d-none': !showVideo}">
+    <div #videoContainer class="video-container">
         <video #video autoplay></video>
     </div>
     <div *ngIf="showReconnecting || showCannotPlay" class="error-container">

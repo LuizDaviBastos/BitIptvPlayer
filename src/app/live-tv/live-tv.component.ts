@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Provider, ViewChild, WritableSignal, inject, signal } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, Platform } from '@ionic/angular';
 import { Conta } from 'src/model/Conta.model';
 import { FireBaseService } from 'src/services/firebase-service';
-import Hls from 'hls.js';
 import { StreamFileManager } from 'src/services/stream-file-manager-service';
 import { Channel } from '../../model/channel';
 import { DatabaseService } from 'src/services/database-service.mobile';
@@ -52,8 +51,8 @@ export class LiveTvComponent {
         this.platform.ready().then(async () => {
             this.xtreamService.login({
                 auth: {
-                    username: 'Robson1374',
-                    password: 'ch3av1jnzme'
+                    username: 'Teste323233',
+                    password: 'ek8scmg3jrh'
                 },
                 baseUrl: 'http://play.1list.vip'
             })
