@@ -51,10 +51,10 @@ export class LiveTvComponent {
         this.platform.ready().then(async () => {
             this.xtreamService.login({
                 auth: {
-                    username: 'Teste323233',
-                    password: 'ek8scmg3jrh'
+                    username: 'Rafael982',
+                    password: '51ciuavl8np'
                 },
-                baseUrl: 'http://play.1list.vip'
+                baseUrl: 'http://play.stmlist.vip'
             })
 
             await this.databaseService.initializePlugin();
