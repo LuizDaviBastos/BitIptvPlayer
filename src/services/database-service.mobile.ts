@@ -1,31 +1,71 @@
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { IDatabaseService } from '../interfaces/database-service.interface';
-import { IChannel } from 'src/interfaces';
 import { Observable } from 'rxjs';
 
+export interface ITABLE {
+    PK: string,
+    NAME: string,
+    INDEX?: string
+}
+
+export interface ISCHEMA {
+    LIVECHANNELS: ITABLE,
+    LIVECATEGORIES: ITABLE,
+    [index: string]: ITABLE
+}
 
 @Injectable({
     providedIn: 'root'
 })
-export class DatabaseService implements IDatabaseService {
-    private DB_USER = 'BitPlayerFb'
-    private TABLE = 'channels'
+export class DatabaseService {
+    public SCHEMA: ISCHEMA = {
+        LIVECHANNELS: <ITABLE>{
+            PK: 'stream_id',
+            NAME: 'live_channels',
+            INDEX: 'category_id'
+        },
+        LIVECATEGORIES: <ITABLE>{
+            PK: 'category_id',
+            NAME: 'live_categories',
+            INDEX: 'parent_id'
+        },
+    }
     private DB_NAME = 'BitPlayerDB';
     private DB_VERSION = 1;
 
-    constructor(private platform: Platform) {
+    constructor() { }
 
+    public async initializePlugin() {
+        try {
+            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+            request.onupgradeneeded = (event: any) => {
+                const db: IDBDatabase = event.target.result;
+                for (let prop in this.SCHEMA) {
+                    const table: ITABLE = this.SCHEMA[prop];
+                    if (!db.objectStoreNames.contains(table.NAME)) {
+                        const objStore: IDBObjectStore = db.createObjectStore(table.NAME, { keyPath: table.PK });
+                        if (table.INDEX) {
+                            objStore.createIndex(table.INDEX, table.INDEX);
+                        }
+                    }
+                }
+            };
+            request.onsuccess = () => { console.log('IndexedDB has been initialized!'); };
+            request.onerror = (event) => { console.error('Error to initialize IndexedDB:', event); };
+            return true;
+        }
+        catch (e) {
+            console.log(e)
+            return false;
+        }
     }
 
-
-    private async getObjectStore(name: string, indexName?: string): Promise<IDBObjectStore | IDBIndex> {
+    public async getObjectStore(name: string, indexName?: string, transactionMode: IDBTransactionMode = 'readwrite'): Promise<IDBObjectStore | IDBIndex> {
         return new Promise<IDBObjectStore | IDBIndex>((resolver, reject) => {
             const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 
             request.onsuccess = (event: any) => {
                 const db: IDBDatabase = event.target.result;
-                const transaction: IDBTransaction = db.transaction(name, 'readonly');
+                const transaction: IDBTransaction = db.transaction(name, transactionMode);
                 const store: IDBObjectStore = transaction.objectStore(name);
 
                 if (indexName) {
@@ -41,7 +81,7 @@ export class DatabaseService implements IDatabaseService {
         });
     }
 
-    private openCursor<T>(tableName: string, index?: string, indexValue?: string) {
+    public openCursor<T>(tableName: string, index?: string, indexValue?: string) {
         return new Observable<T>((subscriber) => {
             this.getObjectStore(tableName, index).then((store) => {
                 const cursorRequest = store.openCursor(indexValue);
@@ -59,123 +99,49 @@ export class DatabaseService implements IDatabaseService {
         });
     }
 
-    public async clearChannels(): Promise<void> {
 
-    }
-
-    public async searchChannels(term: string): Promise<IChannel[]> {
-        return [];
-    }
-
-    public async initializePlugin() {
-        try {
-            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-            request.onupgradeneeded = (event: any) => {
-                console.log('onupgradeneeded')
-                const db: IDBDatabase = event.target.result;
-                if (!db.objectStoreNames.contains(this.TABLE)) {
-                    const objStore: IDBObjectStore = db.createObjectStore('channels', { keyPath: 'stream_id' });
-                    objStore.createIndex("category_id", "category_id");
-                }
-            };
-
-            request.onsuccess = () => {
-                console.log('IndexedDB has been initialized!');
-            };
-
-            request.onerror = (event) => {
-                console.error('Error to initialize IndexedDB:', event);
-            };
-            return true;
-        }
-        catch (e) {
-            console.log(e)
-            return false;
-        }
-    }
-
-    public async deleteObject(name: string): Promise<void> {
-        const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-        request.addEventListener('success', (event: any) => {
-            const db: IDBDatabase = event.target.result;
-            db.deleteObjectStore(name);
+    public async clearObject(name: string): Promise<void> {
+        return new Promise(async (resolver) => {
+            const store = <IDBObjectStore>(await this.getObjectStore(name));
+            const req = store.clear();
+            req.onsuccess = () => resolver();
+            req.onerror = () => resolver();
         });
     }
 
-    public getChannels(categoryId?: string) {
-        return this.openCursor<IChannel>(this.TABLE, 'category_id', categoryId);
-    }
-
-    public async addChannel(channel: IChannel) {
-        try {
-            return new Promise<void>((resolve, reject) => {
-                const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-
-                request.onsuccess = (event: any) => {
-                    const db = event.target.result;
-                    const transaction = db.transaction(this.TABLE, 'readwrite');
-                    const store = transaction.objectStore(this.TABLE);
-
-                    const addRequest = store.add(channel);
-                    addRequest.onsuccess = () => {
-                        console.log('Canal adicionado:', channel);
-                        resolve();
-                    };
-                    addRequest.onerror = (err: any) => {
-                        console.error('Erro ao adicionar canal:', err);
-                        reject(err);
-                    };
-                };
+    public async deleteObject(name: string): Promise<void> {
+        return new Promise((resolver) => {
+            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+            request.addEventListener('success', (event: any) => {
+                try {
+                    const db: IDBDatabase = event.target.result;
+                    db.deleteObjectStore(name);
+                    resolver();
+                } catch {
+                    resolver();
+                }
             });
-        }
-        catch (e) {
-            console.log(e);
-        }
+        })
     }
 
-    public async addChannels(channels: IChannel[]) {
-        try {
-            for (let channel of channels) {
-                this.addChannel(channel);
-            }
-        }
-        catch (e) {
-            console.log(e);
-        }
+    public async getCount(tableName: string, indexName?: string, categoryId?: string) {
+        const store = await this.getObjectStore(tableName, indexName, 'readonly');
+        return new Promise<number>((resolver, reject) => {
+            const request = store.count(categoryId);
+            request.onsuccess = () => { resolver(request.result) };
+        })
     }
 
-    public async hasChannels() {
-        try {
-            return new Promise<boolean>((resolve, reject) => {
-                const request: IDBOpenDBRequest = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-
-                request.onsuccess = (event: Event) => {
-                    const db: IDBDatabase = (event.target as IDBOpenDBRequest).result;
-                    const transaction: IDBTransaction = db.transaction(this.TABLE, 'readonly');
-                    const store: IDBObjectStore = transaction.objectStore(this.TABLE);
-
-                    const countRequest: IDBRequest<number> = store.count();
-                    countRequest.onsuccess = () => {
-                        const count = countRequest.result;
-                        resolve(count > 0);
-                    };
-
-                    countRequest.onerror = (err: Event) => {
-                        console.error('Erro ao contar registros:', err);
-                        reject(err);
-                    };
-                };
-
-                request.onerror = (err: Event) => {
-                    console.error('Erro ao abrir o banco de dados:', err);
+    public async add<T>(tableName: string, object: T) {
+        return new Promise<void>((resolve, reject) => {
+            this.getObjectStore(tableName).then((store) => {
+                const addRequest = (store as IDBObjectStore).add(object);
+                addRequest.onsuccess = () => { resolve(); };
+                addRequest.onerror = (err: any) => {
+                    console.error('Error to add:', err);
                     reject(err);
                 };
             });
-        }
-        catch (e) {
-            console.log(e);
-            return false;
-        }
+        });
     }
-
 }

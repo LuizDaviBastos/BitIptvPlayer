@@ -15,19 +15,14 @@
 
 <ion-content [fullscreen]="true">
     <ion-content>
-        <!-- <ion-refresher pullFactor="0.5" pullMin="10" pullMax="10" slot="fixed"
-            (ionRefresh)="listChannels.bind(this, $event)">
-            <ion-refresher-content></ion-refresher-content>
-        </ion-refresher> -->
         <ion-grid>
-            <ion-row style="width: 100%;">
+            <ion-row>
                 <ion-col size="3">
                     <ion-list>
-                        <!-- <ion-searchbar (keyup.enter)="onSearch()" (keyup)="onSearch()" [(ngModel)]="search"
-                            animated="true" placeholder="Search by name"></ion-searchbar> -->
                         <ion-item (click)="selectCategory(category)"
                             *ngFor="let category of categories">
-                            <ion-label role="button">{{category.category_name}}</ion-label>
+                            <ion-label>{{category.category_name}}</ion-label>
+                            <div class="count">({{category.channelCount}})</div>
                         </ion-item>
                     </ion-list>
                 </ion-col>
@@ -38,7 +33,7 @@
                             <ion-thumbnail>
                                 <img alt="Silhouette of mountains" [src]="channel.stream_icon" />
                             </ion-thumbnail>
-                            <ion-label role="button">{{channel.name}}</ion-label>
+                            <ion-label style="margin-left: 10px;" role="button">{{channel.name}}</ion-label>
                         </ion-item>
                     </ion-list>
                 </ion-col>

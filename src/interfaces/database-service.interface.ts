@@ -5,6 +5,7 @@ import { Observable } from "rxjs";
 export interface IDatabaseService {
     initializePlugin(): Promise<boolean>;
     getChannels(categoryId?: string): Observable<IChannel | undefined>;
+    getChannelCount(categoryId?: string): Promise<number>;
     addChannel(channel: IChannel): Promise<void>;
     addChannels(channels: IChannel[]): Promise<void>;
     hasChannels(): Promise<boolean>;

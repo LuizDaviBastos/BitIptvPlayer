@@ -54,4 +54,14 @@ ion-item:hover{
 }
 ion-item {
   cursor: pointer;
+  color: white;
+}
+
+ion-row {
+  width: 100%;
+}
+
+.count {
+  text-align: right;
+  margin-left: 10px;
 }

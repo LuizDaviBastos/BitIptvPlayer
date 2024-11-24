@@ -12,13 +12,13 @@ interface Config {
     baseUrl: string;
 }
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class XtreamService {
     /**
      * @param {{ baseUrl: string, auth: { username: string, password: string } }} [config]
      */
 
-    private config!: Config;
+    public config!: Config;
     constructor(private httpClient: HttpClient) {
 
     }
@@ -38,7 +38,18 @@ export class XtreamService {
     private execute<T>(action: string = '', filter: any = {}) {
         const query = { ...this.config.auth, action, ...filter };
         //const query = pickBy({ ...this.config.auth, action, ...filter })
-        return this.httpClient.get<T>(`${this.config.baseUrl}/player_api.php?${queryString.stringify(query)}`);
+        const queryParams = this.toQueryParams(query);
+        return this.httpClient.get<T>(`${this.config.baseUrl}/player_api.php?${queryParams}`);
+    }
+
+    private toQueryParams(obj: any) {
+        if(!obj) return '';
+
+        let queryParams = '';
+        for(let prop in obj) {
+            queryParams += `${prop}=${obj[prop]}&`;
+        }
+        return queryParams.slice(0, queryParams.length - 1);
     }
 
     public getAccountInfo() {
@@ -67,6 +78,10 @@ export class XtreamService {
      */
     public getLiveStreams(categoryId: string) {
         return this.execute<IChannel[]>('get_live_streams', { category_id: categoryId })
+    }
+
+    public getAllLiveStreams() {
+        return this.execute<IChannel[]>('get_live_streams')
     }
 
     /**

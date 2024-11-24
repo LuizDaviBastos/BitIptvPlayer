@@ -6,9 +6,10 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { PlayerComponent } from './player/player.component';
+import { ChannelService } from 'src/services/channel-service';
+import { XtreamService } from 'src/services/xtream-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,9 +17,10 @@ import { PlayerComponent } from './player/player.component';
     BrowserModule, 
     IonicModule.forRoot(), 
     AppRoutingModule, 
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    HttpClientModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient, ChannelService, XtreamService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

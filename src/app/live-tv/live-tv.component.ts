@@ -12,6 +12,7 @@ import { XtreamService } from 'src/services/xtream-service';
 import { ICategory } from 'src/interfaces/category.interface';
 import { IChannel } from 'src/interfaces/channel.interface';
 import { PlayerComponent } from '../player/player.component';
+import { ChannelService } from 'src/services/channel-service';
 
 @Component({
     selector: 'live-tv',
@@ -20,33 +21,26 @@ import { PlayerComponent } from '../player/player.component';
 })
 export class LiveTvComponent {
 
-
     @ViewChild('player')
     public player?: PlayerComponent;
     public channels: IChannel[] = [];
-    private databaseService!: IDatabaseService;
     public pagedChannels: Channel[][] = Utils.paginateList<Channel[]>([]);
     public currentPage: number = 0;
     public search: string = '';
     public categories: ICategory[] = [];
 
     constructor(public fb: FireBaseService<Conta>, private route: Router, public alertController: AlertController, private platform: Platform,
-        private streamFileManager: StreamFileManager, private xtreamService: XtreamService) {
+        private streamFileManager: StreamFileManager, private xtreamService: XtreamService, private channelService: ChannelService) {
         fb.configure(() => new Conta());
 
         this.platform.backButton.subscribeWithPriority(10, () => {
             //this.route.navigate(['tabs/tab1']);
         });
 
-        if (!this.platform.is("mobileweb")) {
-            this.databaseService = inject(DatabaseService)
-        } else {
-            this.databaseService = inject(DatabaseService)
-        }
+
     }
 
     async ngAfterViewInit() {
-
         this.platform.ready().then(async () => {
             this.xtreamService.login({
                 auth: {
@@ -54,49 +48,51 @@ export class LiveTvComponent {
                     password: '51ciuavl8np'
                 },
                 baseUrl: 'http://play.stmlist.vip'
-            })
+            });
+            this.channelService.login().then(async () => {
+                if (!(await this.channelService.hasLIVEChannels())) {
+                    this.channelService.downloadLIVEChannels().subscribe((percent) => {
+                        console.log(`LIVE Channels Downloading: ${percent}%`);
+                    }, () => { }, () => {
+                        this.listCategories();
+                    });
+                } else {
+                    this.listCategories();
+                }
+            });
 
-            await this.databaseService.initializePlugin();
-            this.listChannels();
         });
     }
 
     public clearChannels() {
-        this.databaseService.clearChannels().then(() => {
+        this.channelService.clearChannels().then(() => {
             this.channels = [];
         });
     }
 
     public async onSearch() {
         console.log('onSearch');
-       
-        var channelsC = await this.databaseService.searchChannels(this.search);
+
+        var channelsC = await this.channelService.searchChannels(this.search);
         this.pagedChannels = Utils.paginateList(channelsC);
         //this.channels = this.pagedChannels[this.currentPage];
     }
 
     public async selectCategory(category: ICategory) {
         this.channels = [];
-        this.databaseService.getChannels(category.category_id).subscribe((channel) => {
-            
+        this.channelService.getLIVEChannels(category.category_id).subscribe((channel) => {
             channel && this.channels.push(channel);
         }, console.error, () => {
-            if(this.channels.length <= 0) {
-                this.xtreamService.getLiveStreams(category.category_id).subscribe((lives) => {
-                    this.channels = lives;
-                    this.databaseService.addChannels(lives)
-                });
-            }
+
         });
     }
 
-    public async listChannels(event?: any) {
-        this.xtreamService.getLiveStreamCategory().subscribe((categories) => {
-            this.categories = categories;
-        });
-
-        event && event.target.complete();
-
+    public async listCategories(event?: any) {
+        console.log('listCategories');
+        this.categories = [];
+        this.channelService.getLIVECategories().subscribe((category) => {
+            this.categories.push(category);
+        }, console.error, ()=> this.selectCategory(this.categories[0]));
     }
 
     public currentChannel?: IChannel;
@@ -104,12 +100,5 @@ export class LiveTvComponent {
         this.player?.selectChannel(channel);
 
     }
-    public seconds: number = 0;
-
-
-    public load(seconds: number, channel: IChannel) {
-
-    }
-
 }
 
