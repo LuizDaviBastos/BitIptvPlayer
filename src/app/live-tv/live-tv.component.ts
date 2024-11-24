@@ -42,25 +42,7 @@ export class LiveTvComponent {
 
     async ngAfterViewInit() {
         this.platform.ready().then(async () => {
-            this.xtreamService.login({
-                auth: {
-                    username: 'Rafael982',
-                    password: '51ciuavl8np'
-                },
-                baseUrl: 'http://play.stmlist.vip'
-            });
-            this.channelService.login().then(async () => {
-                if (!(await this.channelService.hasLIVEChannels())) {
-                    this.channelService.downloadLIVEChannels().subscribe((percent) => {
-                        console.log(`LIVE Channels Downloading: ${percent}%`);
-                    }, () => { }, () => {
-                        this.listCategories();
-                    });
-                } else {
-                    this.listCategories();
-                }
-            });
-
+            this.listCategories();
         });
     }
 

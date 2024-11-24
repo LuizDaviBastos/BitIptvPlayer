@@ -80,3 +80,7 @@ ion-label {
   background: rgb(27, 20, 152);
   background: linear-gradient(172deg, rgba(27, 20, 152, 1) 0%, rgba(9, 9, 121, 1) 16%, rgba(0, 212, 255, 1) 100%);
 }
+
+container-loading {
+  z-index: 2;
+}

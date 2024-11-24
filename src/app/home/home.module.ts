@@ -21,6 +21,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSmile } from '@fortawesome/free-solid-svg-icons';
 import { IconPack, faTv } from '@fortawesome/free-solid-svg-icons';
 import { PlayerComponent } from '../player/player.component';
+import { ContainerLoadingComponent } from '../container-loading/container-loading.component';
+import { ChannelService } from 'src/services/channel-service';
 
 
 
@@ -33,13 +35,14 @@ import { PlayerComponent } from '../player/player.component';
     HttpClientModule,
     FontAwesomeModule,
   ],
-  declarations: [HomePage, LiveTvComponent, PlayerComponent],
+  declarations: [HomePage, LiveTvComponent, PlayerComponent, ContainerLoadingComponent],
   providers: [
     HttpClient,
     FireBaseService,
     StreamFileManager,
     DatabaseService,
-    XtreamService
+    XtreamService,
+    ChannelService
   ]
 })
 export class HomePageModule {

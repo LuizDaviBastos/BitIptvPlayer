@@ -8,8 +8,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { ChannelService } from 'src/services/channel-service';
-import { XtreamService } from 'src/services/xtream-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +18,7 @@ import { XtreamService } from 'src/services/xtream-service';
     IonicStorageModule.forRoot(),
     HttpClientModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient, ChannelService, XtreamService],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

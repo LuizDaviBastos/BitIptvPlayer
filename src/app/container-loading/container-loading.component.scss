@@ -1,0 +1,22 @@
+.loading-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+}
+
+.loading {
+    background-color: rgba(0, 0, 0, 0.486);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-origin: right;
+    transform: scaleX(1);
+}
+
+label {
+    margin: auto auto 20px auto;
+    font-size: large;
+    color: white;
+    z-index: 3;
+}

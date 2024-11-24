@@ -4,6 +4,7 @@
       <ion-row class="ion-row-container">
         <ion-col size="4" class="col-live">
           <ion-card class="card-live" (click)="navigate('live')" color="primary">
+            <container-loading [showLoading]="LIVEShowLoading" [percent]="LIVEpercent"></container-loading>
             <ion-icon class="icon-tv" src="./../../assets/icons/tv.svg"></ion-icon>
             <ion-card-title>AO VIVO</ion-card-title>
           </ion-card>
