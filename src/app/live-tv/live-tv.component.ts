@@ -69,27 +69,25 @@ export class LiveTvComponent {
 
     public async onSearch() {
         console.log('onSearch');
-        if (!this.search) {
-            this.databaseService.getChannels();
-            this.pagedChannels = Utils.paginateList(await this.databaseService.getChannels());
-            //this.channels = this.pagedChannels[this.currentPage];
-        }
+       
         var channelsC = await this.databaseService.searchChannels(this.search);
         this.pagedChannels = Utils.paginateList(channelsC);
         //this.channels = this.pagedChannels[this.currentPage];
     }
 
     public async selectCategory(category: ICategory) {
-        let result = await this.databaseService.getChannels(category.category_id);
-        if (result?.length > 0) {
-            this.channels = result;
-            console.log('has channel')
-        } else {
-            this.xtreamService.getLiveStreams(category.category_id).subscribe((lives) => {
-                this.channels = lives;
-                this.databaseService.addChannels(lives)
-            });
-        }
+        this.channels = [];
+        this.databaseService.getChannels(category.category_id).subscribe((channel) => {
+            
+            channel && this.channels.push(channel);
+        }, console.error, () => {
+            if(this.channels.length <= 0) {
+                this.xtreamService.getLiveStreams(category.category_id).subscribe((lives) => {
+                    this.channels = lives;
+                    this.databaseService.addChannels(lives)
+                });
+            }
+        });
     }
 
     public async listChannels(event?: any) {

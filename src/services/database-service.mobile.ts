@@ -1,8 +1,8 @@
-import { Injectable, WritableSignal, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Channel } from 'src/model/channel';
 import { IDatabaseService } from '../interfaces/database-service.interface';
 import { IChannel } from 'src/interfaces';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -17,6 +17,48 @@ export class DatabaseService implements IDatabaseService {
     constructor(private platform: Platform) {
 
     }
+
+
+    private async getObjectStore(name: string, indexName?: string): Promise<IDBObjectStore | IDBIndex> {
+        return new Promise<IDBObjectStore | IDBIndex>((resolver, reject) => {
+            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+
+            request.onsuccess = (event: any) => {
+                const db: IDBDatabase = event.target.result;
+                const transaction: IDBTransaction = db.transaction(name, 'readonly');
+                const store: IDBObjectStore = transaction.objectStore(name);
+
+                if (indexName) {
+                    resolver(store.index(indexName))
+                } else {
+                    resolver(store)
+                }
+
+                resolver(store);
+            };
+
+            request.onerror = reject;
+        });
+    }
+
+    private openCursor<T>(tableName: string, index?: string, indexValue?: string) {
+        return new Observable<T>((subscriber) => {
+            this.getObjectStore(tableName, index).then((store) => {
+                const cursorRequest = store.openCursor(indexValue);
+                cursorRequest.onsuccess = (event: any) => {
+                    const cursor = event.target.result;
+                    if (cursor) {
+                        subscriber.next(<T>cursor.value);
+                        cursor.continue();
+                    } else {
+                        subscriber.complete();
+                    }
+                };
+                cursorRequest.onerror = error => subscriber.error(error);
+            })
+        });
+    }
+
     public async clearChannels(): Promise<void> {
 
     }
@@ -31,18 +73,18 @@ export class DatabaseService implements IDatabaseService {
             request.onupgradeneeded = (event: any) => {
                 console.log('onupgradeneeded')
                 const db: IDBDatabase = event.target.result;
-                if (!db.objectStoreNames.contains('channels')) {
-                    let obj: IDBObjectStore = db.createObjectStore('channels', { keyPath: 'stream_id' });
-                    obj.createIndex("category_id", "category_id");
+                if (!db.objectStoreNames.contains(this.TABLE)) {
+                    const objStore: IDBObjectStore = db.createObjectStore('channels', { keyPath: 'stream_id' });
+                    objStore.createIndex("category_id", "category_id");
                 }
             };
 
             request.onsuccess = () => {
-                console.log('IndexedDB inicializado com sucesso!');
+                console.log('IndexedDB has been initialized!');
             };
 
             request.onerror = (event) => {
-                console.error('Erro ao inicializar IndexedDB:', event);
+                console.error('Error to initialize IndexedDB:', event);
             };
             return true;
         }
@@ -60,36 +102,8 @@ export class DatabaseService implements IDatabaseService {
         });
     }
 
-    public async getChannels(categoryId?: string) {
-        try {
-            return new Promise<any>((resolve, reject) => {
-                const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-
-                request.onsuccess = (event: any) => {
-                    const db: IDBDatabase = event.target.result;
-                    const transaction: IDBTransaction = db.transaction('channels', 'readonly');
-                    const store: IDBObjectStore = transaction.objectStore('channels');
-                    let request: IDBRequest;
-
-                    if (categoryId) {
-                        const index = store.index('category_id');
-                        request = index.getAll(categoryId);
-                    } else {
-                        request = store.getAll();
-                    }
-
-                    request.onsuccess = () => {
-                        resolve(request.result);
-                    };
-                    request.onerror = (err) => {
-                        console.error('Erro ao buscar canal:', err);
-                        reject(err);
-                    };
-                };
-            });
-        } catch (e) {
-            console.log(e);
-        }
+    public getChannels(categoryId?: string) {
+        return this.openCursor<IChannel>(this.TABLE, 'category_id', categoryId);
     }
 
     public async addChannel(channel: IChannel) {
@@ -99,8 +113,8 @@ export class DatabaseService implements IDatabaseService {
 
                 request.onsuccess = (event: any) => {
                     const db = event.target.result;
-                    const transaction = db.transaction('channels', 'readwrite');
-                    const store = transaction.objectStore('channels');
+                    const transaction = db.transaction(this.TABLE, 'readwrite');
+                    const store = transaction.objectStore(this.TABLE);
 
                     const addRequest = store.add(channel);
                     addRequest.onsuccess = () => {
@@ -121,16 +135,14 @@ export class DatabaseService implements IDatabaseService {
 
     public async addChannels(channels: IChannel[]) {
         try {
-            for (let i = 0; i < channels.length; i++) {
-                this.addChannel(channels[i]);
+            for (let channel of channels) {
+                this.addChannel(channel);
             }
         }
         catch (e) {
             console.log(e);
         }
     }
-
-
 
     public async hasChannels() {
         try {
@@ -139,13 +151,13 @@ export class DatabaseService implements IDatabaseService {
 
                 request.onsuccess = (event: Event) => {
                     const db: IDBDatabase = (event.target as IDBOpenDBRequest).result;
-                    const transaction: IDBTransaction = db.transaction('channels', 'readonly');
-                    const store: IDBObjectStore = transaction.objectStore('channels');
+                    const transaction: IDBTransaction = db.transaction(this.TABLE, 'readonly');
+                    const store: IDBObjectStore = transaction.objectStore(this.TABLE);
 
                     const countRequest: IDBRequest<number> = store.count();
                     countRequest.onsuccess = () => {
                         const count = countRequest.result;
-                        resolve(count > 0); // Retorna true se existirem registros
+                        resolve(count > 0);
                     };
 
                     countRequest.onerror = (err: Event) => {

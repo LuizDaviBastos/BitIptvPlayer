@@ -1,6 +1,6 @@
 <div class="player-container">
     <div #videoContainer class="video-container">
-        <video #video autoplay></video>
+        <video #video autoplay controls></video>
     </div>
     <div *ngIf="showReconnecting || showCannotPlay" class="error-container">
         <label *ngIf="showReconnecting" class="error-player">Playback error, reconnecting in 5s

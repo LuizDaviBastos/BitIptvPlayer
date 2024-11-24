@@ -37,7 +37,7 @@ export class PlayerComponent {
         this.video = this.videoRef?.nativeElement as HTMLVideoElement;
         this.player = new Hls();
         this.player.attachMedia(this.video);
-
+        this.video.volume = 1;
         this.player.on(Hls.Events.MANIFEST_PARSED, () => {
             console.log("MANIFEST_PARSED")
             this.player!.startLoad();
@@ -97,7 +97,6 @@ export class PlayerComponent {
             if (!this.player) return;
             const url = this.xtreamService.getChannelUrl(channel);
             this.player.loadSource(url);
-            this.video!.volume = 0;
         }, force ? 0 : 5000);
 
     }

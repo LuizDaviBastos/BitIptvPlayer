@@ -4,9 +4,6 @@
             <ion-buttons slot="start">
                 <ion-back-button default-href="#"></ion-back-button>
             </ion-buttons>
-            <div>
-                <ion-title>Back Button</ion-title>
-            </div>
             <!-- <div>
                 <ion-searchbar (keyup.enter)="onSearch()" (keyup)="onSearch()" [(ngModel)]="search" animated="true"
                     placeholder="Search channel"></ion-searchbar>
@@ -23,12 +20,12 @@
             <ion-refresher-content></ion-refresher-content>
         </ion-refresher> -->
         <ion-grid>
-            <ion-row>
+            <ion-row style="width: 100%;">
                 <ion-col size="3">
                     <ion-list>
                         <!-- <ion-searchbar (keyup.enter)="onSearch()" (keyup)="onSearch()" [(ngModel)]="search"
                             animated="true" placeholder="Search by name"></ion-searchbar> -->
-                        <ion-item role="button" (click)="selectCategory(category)" role="button"
+                        <ion-item (click)="selectCategory(category)"
                             *ngFor="let category of categories">
                             <ion-label role="button">{{category.category_name}}</ion-label>
                         </ion-item>
@@ -36,7 +33,7 @@
                 </ion-col>
                 <ion-col size="4">
                     <ion-list>
-                        <ion-item role="button" (click)="selectChannel(channel)" role="button"
+                        <ion-item (click)="selectChannel(channel)"
                             *ngFor="let channel of channels">
                             <ion-thumbnail>
                                 <img alt="Silhouette of mountains" [src]="channel.stream_icon" />

@@ -38,11 +38,20 @@ ion-grid {
 
 ion-col {
   padding: 0px;
-  margin: 0px 2px 0px 1px;
+  margin: 0px;
   max-height: 100%;
 }
 
 ion-list {
   overflow: auto;
   max-height: 100%;
+  scrollbar-width: none!important;
+  min-height: 100%;
+}
+
+ion-item:hover{
+  background-color: #cbcbcb!important;
+}
+ion-item {
+  cursor: pointer;
 }
