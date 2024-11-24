@@ -15,13 +15,13 @@ export class ChannelService {
     }
 
     public async login(userName?: string, password?: string) {
-         this.xtreamService.login({
+        this.xtreamService.login({
             auth: {
                 username: userName || 'Rafael982',
                 password: password || '51ciuavl8np'
             },
             baseUrl: 'http://play.stmlist.vip'
-        }); 
+        });
         console.log(this.xtreamService.config);
         await this.databaseService.initializePlugin();
     }
@@ -40,14 +40,14 @@ export class ChannelService {
                     const promises = [];
                     for (let categoryIndex = 0; categoryIndex < length; categoryIndex++) {
                         promises.push(new Promise<any>(async (resolver, reject) => {
-                        const category: ICategory = categories[categoryIndex];
-                        const channels = sourceChannels.filter(x => x.category_id == category.category_id);
-                        category.channelCount = channels.length;
-                        await this.addCategory(category);
-                        await this.addChannels(channels);
-                        subscriber.next(Math.floor(((categoryIndex + 1) * 100) / length));
-                        resolver(null);
-                      }))
+                            const category: ICategory = categories[categoryIndex];
+                            const channels = sourceChannels.filter(x => x.category_id == category.category_id);
+                            category.channelCount = channels.length;
+                            await this.addCategory(category);
+                            await this.addChannels(channels);
+                            subscriber.next(Math.floor(((categoryIndex + 1) * 100) / length));
+                            resolver(null);
+                        }))
                     }
                     await Promise.all(promises);
                     subscriber.complete();
