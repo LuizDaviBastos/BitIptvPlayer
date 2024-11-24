@@ -7,7 +7,6 @@ import { StreamFileManager } from 'src/services/stream-file-manager-service';
 import { Channel } from '../../model/channel';
 import { DatabaseService } from 'src/services/database-service.mobile';
 import { IDatabaseService } from 'src/interfaces/database-service.interface';
-import { DatabaseServiceWeb } from 'src/services/database-service.web';
 import { Utils } from 'src/utils/utils';
 import { XtreamService } from 'src/services/xtream-service';
 import { ICategory } from 'src/interfaces/category.interface';
@@ -22,7 +21,7 @@ import { PlayerComponent } from '../player/player.component';
 export class LiveTvComponent {
 
 
-    @ViewChild('player') 
+    @ViewChild('player')
     public player?: PlayerComponent;
     public channels: IChannel[] = [];
     private databaseService!: IDatabaseService;
@@ -42,12 +41,12 @@ export class LiveTvComponent {
         if (!this.platform.is("mobileweb")) {
             this.databaseService = inject(DatabaseService)
         } else {
-            this.databaseService = inject(DatabaseServiceWeb)
+            this.databaseService = inject(DatabaseService)
         }
     }
 
     async ngAfterViewInit() {
-        
+
         this.platform.ready().then(async () => {
             this.xtreamService.login({
                 auth: {
@@ -71,7 +70,7 @@ export class LiveTvComponent {
     public async onSearch() {
         console.log('onSearch');
         if (!this.search) {
-            this.databaseService.loadChannels();
+            this.databaseService.getChannels();
             this.pagedChannels = Utils.paginateList(await this.databaseService.getChannels());
             //this.channels = this.pagedChannels[this.currentPage];
         }
@@ -80,10 +79,17 @@ export class LiveTvComponent {
         //this.channels = this.pagedChannels[this.currentPage];
     }
 
-    public selectCategory(category: ICategory) {
-        this.xtreamService.getLiveStreams(category.category_id).subscribe((lives) => {
-            this.channels = lives;
-        });
+    public async selectCategory(category: ICategory) {
+        let result = await this.databaseService.getChannels(category.category_id);
+        if (result?.length > 0) {
+            this.channels = result;
+            console.log('has channel')
+        } else {
+            this.xtreamService.getLiveStreams(category.category_id).subscribe((lives) => {
+                this.channels = lives;
+                this.databaseService.addChannels(lives)
+            });
+        }
     }
 
     public async listChannels(event?: any) {
@@ -91,30 +97,20 @@ export class LiveTvComponent {
             this.categories = categories;
         });
 
-        return;
-        if ((await this.databaseService.hasChannels())) {
-            await this.databaseService.loadChannels();
-            const channels = this.databaseService.getChannels();
-            this.pagedChannels = Utils.paginateList(channels);
-            //this.channels = this.pagedChannels[this.currentPage];
-        }
-        else {
-            
-        }
         event && event.target.complete();
 
     }
 
     public currentChannel?: IChannel;
     public selectChannel(channel: IChannel) {
-       this.player?.selectChannel(channel);
-        
+        this.player?.selectChannel(channel);
+
     }
     public seconds: number = 0;
-  
 
-    public load (seconds: number, channel: IChannel) {
-        
+
+    public load(seconds: number, channel: IChannel) {
+
     }
 
 }

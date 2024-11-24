@@ -9,7 +9,6 @@ import { FireBaseService } from 'src/services/firebase-service';
 import { StreamFileManager } from 'src/services/stream-file-manager-service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DatabaseService } from 'src/services/database-service.mobile';
-import { DatabaseServiceWeb } from 'src/services/database-service.web';
 import { XtreamService } from 'src/services/xtream-service';
 import { LiveTvComponent } from '../live-tv/live-tv.component';
 import {
@@ -40,7 +39,6 @@ import { PlayerComponent } from '../player/player.component';
     FireBaseService,
     StreamFileManager,
     DatabaseService,
-    DatabaseServiceWeb,
     XtreamService
   ]
 })
