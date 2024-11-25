@@ -84,3 +84,10 @@ ion-label {
 container-loading {
   z-index: 2;
 }
+
+ion-card-title {
+  user-select: none;
+}
+ion-label {
+  user-select: none;
+}

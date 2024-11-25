@@ -3,7 +3,7 @@
     <ion-grid>
       <ion-row class="ion-row-container">
         <ion-col size="4" class="col-live">
-          <ion-card class="card-live" (click)="navigate('live')" color="primary">
+          <ion-card tabindex="0" class="card-live focusable focused" (click)="navigate('live')" color="primary">
             <container-loading [showLoading]="LIVEShowLoading" [percent]="LIVEpercent"></container-loading>
             <ion-icon class="icon-tv" src="./../../assets/icons/tv.svg"></ion-icon>
             <ion-card-title>AO VIVO</ion-card-title>
@@ -12,13 +12,13 @@
         <ion-col size="8" class="p-0">
           <ion-row class="row-secondary">
             <ion-col>
-              <ion-card color="secondary">
+              <ion-card tabindex="1" class="focusable" color="secondary">
                 <ion-icon class="icon-tv" src="./../../assets/icons/play-circle.svg"></ion-icon>
                 <ion-card-title>FILMES</ion-card-title>
               </ion-card>
             </ion-col>
             <ion-col>
-              <ion-card color="tertiary">
+              <ion-card tabindex="2" class="focusable" color="tertiary">
                 <ion-icon class="icon-tv" src="./../../assets/icons/tv.svg"></ion-icon>
                 <ion-card-title>SERIES</ion-card-title>
               </ion-card>
@@ -26,17 +26,17 @@
           </ion-row>
           <ion-row class="epg-row">
             <ion-col size="4">
-              <ion-card class="epg-card" color="tertiary">
+              <ion-card tabindex="1" class="epg-card focusable" color="tertiary">
                 <ion-label>LIVE WITH EPG</ion-label>
               </ion-card>
             </ion-col>
             <ion-col size="4">
-              <ion-card (click)="getLiveInformation()" class="epg-card" color="tertiary">
+              <ion-card tabindex="1" (click)="getLiveInformation()" class="epg-card focusable" color="tertiary">
                 <ion-label>CATCHUP</ion-label>
               </ion-card>
             </ion-col>
             <ion-col size="4">
-              <ion-card class="epg-card" color="tertiary">
+              <ion-card tabindex="2" class="epg-card focusable" color="tertiary">
                 <ion-label>DESLOGAR</ion-label>
               </ion-card>
             </ion-col>
