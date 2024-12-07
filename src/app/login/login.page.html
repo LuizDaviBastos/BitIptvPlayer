@@ -1,0 +1,27 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <div class="login-content">
+      <h1 class="login-title">Bem-vindo de volta</h1>
+      <p class="login-subtitle">Por favor, faça login para continuar</p>
+      <form (ngSubmit)="login()" class="login-form">
+        <ion-item class="custom-input">
+          <ion-label class="label-input" position="floating">Email</ion-label>
+          <ion-input class="input-box" type="email" [(ngModel)]="email" name="email" required autocomplete="off"></ion-input>
+        </ion-item>
+        <ion-item class="custom-input">
+          <ion-label class="label-input" position="floating">Senha</ion-label>
+          <ion-input class="input-box"  type="password" [(ngModel)]="password" name="senha" required autocomplete="off"></ion-input>
+        </ion-item>
+        <ion-button 
+          expand="block" 
+          type="submit" 
+          class="login-button" 
+          [disabled]="!email || !password" 
+          >
+          Entrar
+        </ion-button>
+      </form>
+      <p class="forgot-password">Esqueceu sua senha? <a href="#">Redefina aqui</a></p>
+    </div>
+  </div>
+</ion-content>

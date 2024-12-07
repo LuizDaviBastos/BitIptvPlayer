@@ -1,0 +1,75 @@
+ion-content {
+  --background: linear-gradient(135deg, #191970);
+  height: 100%;
+  overflow: hidden;
+
+}
+
+.label-input{
+  color: black;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; 
+}
+
+.login-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color:black;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.login-subtitle {
+  color: var(--ion-color-medium);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.login-form {
+  margin-bottom: 1rem;
+}
+
+.custom-input {
+  --background: #f4f4f4;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --border-radius: 8px;
+  margin-bottom: 1rem;
+  
+}
+
+.input-box{
+  color: black;
+}
+
+.login-button {
+  margin-top: 1.5rem;
+  --border-radius: 8px;
+  font-weight: bold;
+}
+
+.forgot-password {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  
+  a {
+    color: var(--ion-color-primary);
+    text-decoration: none;
+    font-weight: bold;
+  }
+}

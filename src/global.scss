@@ -35,8 +35,10 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/ionic.bundle.css";
 
-
+//@import "~bootstrap/dist/css/bootstrap.min.css";
 .p-0 {
     padding: 0px !important;
 }
