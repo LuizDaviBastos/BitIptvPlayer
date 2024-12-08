@@ -3,7 +3,7 @@ import { IChannel } from "./channel.interface";
 import { Observable } from "rxjs";
 
 export interface IDatabaseService {
-    initializePlugin(): Promise<boolean>;
+    initializePlugin(): Promise<void>;
     getChannels(categoryId?: string): Observable<IChannel | undefined>;
     getChannelCount(categoryId?: string): Promise<number>;
     addChannel(channel: IChannel): Promise<void>;

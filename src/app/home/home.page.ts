@@ -22,7 +22,7 @@ export class HomePage implements AfterViewInit {
   ngAfterViewInit(): void {
     this.platform.ready().then(async () => {
       this.selectDefaultIndex();
-      this.channelService.login().then(async () => {
+      this.channelService.login().subscribe(async () => {
         if (!(await this.channelService.hasLIVEChannels())) {
           this.channelService.downloadLIVEChannels().subscribe((percent) => {
             this.LIVEpercent = percent / 100;

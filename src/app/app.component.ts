@@ -16,7 +16,7 @@ export class AppComponent {
   }
 
   async ngAfterViewInit() {
-
+    console.log('app component')
   }
 
 

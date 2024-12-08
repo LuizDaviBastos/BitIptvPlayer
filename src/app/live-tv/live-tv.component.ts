@@ -5,14 +5,13 @@ import { Conta } from 'src/model/Conta.model';
 import { FireBaseService } from 'src/services/firebase-service';
 import { StreamFileManager } from 'src/services/stream-file-manager-service';
 import { Channel } from '../../model/channel';
-import { DatabaseService } from 'src/services/database-service.mobile';
-import { IDatabaseService } from 'src/interfaces/database-service.interface';
 import { Utils } from 'src/utils/utils';
 import { XtreamService } from 'src/services/xtream-service';
 import { ICategory } from 'src/interfaces/category.interface';
 import { IChannel } from 'src/interfaces/channel.interface';
 import { PlayerComponent } from '../player/player.component';
 import { ChannelService } from 'src/services/channel-service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
     selector: 'live-tv',
@@ -28,6 +27,8 @@ export class LiveTvComponent {
     public currentPage: number = 0;
     public search: string = '';
     public categories: ICategory[] = [];
+    public channelSelectDebounce: Subject<IChannel> = new Subject<IChannel>();
+    private channelDebounceTimeMs = 0;
 
     constructor(public fb: FireBaseService<Conta>, private route: Router, public alertController: AlertController, private platform: Platform,
         private streamFileManager: StreamFileManager, private xtreamService: XtreamService, private channelService: ChannelService) {
@@ -43,6 +44,7 @@ export class LiveTvComponent {
     async ngAfterViewInit() {
         this.platform.ready().then(async () => {
             this.listCategories();
+            this.setDebounce();
         });
     }
 
@@ -57,7 +59,6 @@ export class LiveTvComponent {
 
         var channelsC = await this.channelService.searchChannels(this.search);
         this.pagedChannels = Utils.paginateList(channelsC);
-        //this.channels = this.pagedChannels[this.currentPage];
     }
 
     public async selectCategory(category: ICategory) {
@@ -74,13 +75,27 @@ export class LiveTvComponent {
         this.categories = [];
         this.channelService.getLIVECategories().subscribe((category) => {
             this.categories.push(category);
-        }, console.error, ()=> this.selectCategory(this.categories[0]));
+        }, console.error, () => this.selectCategory(this.categories[0]));
     }
 
     public currentChannel?: IChannel;
     public selectChannel(channel: IChannel) {
-        this.player?.selectChannel(channel);
+        this.player?.showLoading(true);
+        this.channelSelectDebounce.next(channel);
+    }
 
+    public onPlaying() {
+        
+    }
+
+    private setDebounce() {
+        this.channelSelectDebounce = new Subject<IChannel>();
+        this.channelSelectDebounce.pipe(debounceTime(this.channelDebounceTimeMs)).subscribe((channel: IChannel) => {
+            console.log('selected channel: ', channel);
+            this.player?.selectChannel(channel);
+            //this.channelDebounceTimeMs = 5000;
+            this.setDebounce();
+        })
     }
 }
 

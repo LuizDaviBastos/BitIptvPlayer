@@ -1,6 +1,10 @@
 .home-container {
   display: flex;
   height: 100%;
+
+  ion-card-title {
+    font-weight: 700;
+  }
 }
 
 ion-grid {
@@ -88,6 +92,7 @@ container-loading {
 ion-card-title {
   user-select: none;
 }
+
 ion-label {
   user-select: none;
 }

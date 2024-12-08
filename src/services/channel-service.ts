@@ -14,16 +14,16 @@ export class ChannelService {
         this.SCHEMA = databaseService.SCHEMA;
     }
 
-    public async login(userName?: string, password?: string) {
+    public login(userName?: string, password?: string) {
         this.xtreamService.login({
             auth: {
-                username: userName || 'Rafael982',
-                password: password || '51ciuavl8np'
+                username: userName || 'timelord13',
+                password: password || 'c8ghezompkr'
             },
             baseUrl: 'http://play.stmlist.vip'
         });
         console.log(this.xtreamService.config);
-        await this.databaseService.initializePlugin();
+        return this.databaseService.initializePlugin();
     }
 
     public async hasLIVEChannels() {

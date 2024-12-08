@@ -34,8 +34,8 @@ export class DatabaseService {
 
     constructor() { }
 
-    public async initializePlugin() {
-        try {
+    public initializePlugin() {
+        return new Observable((subscriber) => {
             const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
             request.onupgradeneeded = (event: any) => {
                 const db: IDBDatabase = event.target.result;
@@ -49,14 +49,14 @@ export class DatabaseService {
                     }
                 }
             };
-            request.onsuccess = () => { console.log('IndexedDB has been initialized!'); };
-            request.onerror = (event) => { console.error('Error to initialize IndexedDB:', event); };
-            return true;
-        }
-        catch (e) {
-            console.log(e)
-            return false;
-        }
+            request.onsuccess = (event: any) => { 
+                const db: IDBDatabase = event.target.result;
+                console.log('IndexedDB has been initialized!'); 
+                subscriber.next(null); 
+
+            };
+            request.onerror = (event) => { console.error('Error to initialize IndexedDB:', event); subscriber.next(null); };
+        });
     }
 
     public async getObjectStore(name: string, indexName?: string, transactionMode: IDBTransactionMode = 'readwrite'): Promise<IDBObjectStore | IDBIndex> {

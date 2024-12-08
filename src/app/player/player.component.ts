@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
 import Hls from 'hls.js';
 import { XtreamService } from 'src/services/xtream-service';
@@ -16,7 +16,7 @@ export class PlayerComponent {
     @ViewChild('videoContainer') videoContainer?: ElementRef;
     public player?: Hls = new Hls();
     public video?: HTMLVideoElement;
-    
+
     public seconds: number = 0;
     public currentChannel?: IChannel;
     //public url: string = 'http://play.1list.vip/get.php?username=Robson1374&password=ch3av1jnzme&type=m3u_plus&output=ts';
@@ -26,14 +26,16 @@ export class PlayerComponent {
     public showVideo: boolean = false;
     public showLoadingContainer: boolean = false;
 
+    @Output() 
+    public onPlaying: EventEmitter<void> = new EventEmitter();
+
     constructor(public alertController: AlertController, private platform: Platform,
         private xtreamService: XtreamService) {
 
     }
 
     async ngAfterViewInit() {
-        //this.showLoading(true);
-        this.videoContainer
+        this.setVideoVisible(false);
         this.video = this.videoRef?.nativeElement as HTMLVideoElement;
         this.player = new Hls();
         this.player.attachMedia(this.video);
@@ -46,9 +48,13 @@ export class PlayerComponent {
 
             this.showReconnecting = false;
             this.showCannotPlay = false;
-            this.showLoadingContainer = false;
-            
-            this.setVideoVisible(true);
+
+            this.video!.onplay = () => {
+                console.log('onplay video!')
+                this.showLoadingContainer = false;
+                this.setVideoVisible(true);
+                this.onPlaying.emit();
+            }
         });
 
         this.player.on(Hls.Events.ERROR, (event, data) => {
@@ -83,6 +89,7 @@ export class PlayerComponent {
     }
 
     public selectChannel(channel: IChannel, force: boolean = true) {
+        //TODO debounce 5s
         this.currentChannel = channel;
         if (!this.player) return;
 
@@ -110,7 +117,7 @@ export class PlayerComponent {
     }
 
     public setVideoVisible(visible: boolean) {
-        if(this.videoContainer?.nativeElement) {
+        if (this.videoContainer?.nativeElement) {
             this.videoContainer.nativeElement.hidden = !visible;
         }
     }
