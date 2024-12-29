@@ -7,6 +7,7 @@
     "ng": "ng",
     "android": "npm run build-android & ionic capacitor run android --target Pixel_6_API_30_Sem_PlayStore",
     "android-4": "npm run build-android & ionic capacitor run android --target Pixel_4_API_30",
+    "deploy-android": "npm run build-android & npx cap copy & npx cap sync & npx cap open android",
     "build-android": "build.bat",
     "start": "ionic serve",
     "build": "ionic build & ionic cap build android --no-open & npx cap sync & npx cap-config run config.yaml -y & rsync -avz ./google-services.json /android/app & npx @capacitor/assets generate --iconBackgroundColor=#ffde33 --iconBackgroundColorDark=#ffde33 --splashBackgroundColor=#ffde33 --splashBackgroundColorDark=#ffde33 & ionic deploy add --app-id=6e1f9995 --channel-name=asm_channel --update-method=auto",
