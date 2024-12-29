@@ -18,7 +18,7 @@ export class ChannelService {
         this.xtreamService.login({
             auth: {
                 username: userName || 'timelord13',
-                password: password || 'c8ghezompkr'
+                password: password || ''
             },
             baseUrl: 'http://play.stmlist.vip'
         });

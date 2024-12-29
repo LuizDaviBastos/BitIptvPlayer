@@ -3,7 +3,7 @@
 
 IF NOT EXIST "./my-release-key.keystore" (
     REM  Generate the key store
-    keytool -genkey -v -keystore my-release-key.keystore -alias mykeystore -keyalg RSA -keysize 2048 -validity 10000 -storepass 80849903D
+    keytool -genkey -v -keystore my-release-key.keystore -alias mykeystore -keyalg RSA -keysize 2048 -validity 10000 -storepass 1234
 )
 
 IF "%1"=="build" (
@@ -11,7 +11,7 @@ IF "%1"=="build" (
     gradlew assembleRelease & cd .. & deploy.bat
 )
 
-jarsigner -verbose -sigalg SHA1withRSA -storepass 80849903D -digestalg SHA1 -keystore my-release-key.keystore "./android/app/build/outputs/apk/release/app-release-unsigned.apk" mykeystore
+jarsigner -verbose -sigalg SHA1withRSA -storepass 1234 -digestalg SHA1 -keystore my-release-key.keystore "./android/app/build/outputs/apk/release/app-release-unsigned.apk" mykeystore
 
 IF EXIST ASM.apk (
     del ASM.apk
